@@ -1,14 +1,17 @@
 /*!
  * Author: James Carppe
  * Date: 29/02/2024
- * Version: 1.0.0
+ * Version: 1.0.1
  *
  * @brief Defines & implements types to simplify file input & output.
+ *
+ * Primary comments are provided in the header file.
  */
 
 #include <stdio.h>
 #include "files.h"
 
+// Gets the number of lines in a given file
 int get_lines_in_file(FILE* target) {
     // Count the lines
     int lines = 0;
@@ -26,6 +29,7 @@ int get_lines_in_file(FILE* target) {
     return lines;
 }
 
+// Opens and returns a read-only file inside a ReadOnly_File struct
 struct ReadOnly_File open_readonly_file(const char* file_path) {
     // Open the file
     FILE *file = fopen(file_path, "r");
@@ -56,6 +60,7 @@ struct ReadOnly_File open_readonly_file(const char* file_path) {
     return result;
 }
 
+// Opens and returns a read+write file inside a ReadWrite_File struct
 struct ReadWrite_File open_readwrite_file(const char* file_path) {
     // Open the file
     FILE *file = fopen(file_path, "r+");

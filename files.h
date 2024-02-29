@@ -1,7 +1,7 @@
 /*!
  * Author: James Carppe
  * Date: 29/02/2024
- * Version: 1.0.0
+ * Version: 1.0.1
  *
  * @brief Defines & implements types to simplify file input & output.
  */
@@ -18,7 +18,7 @@
  */
 typedef struct ReadOnly_File {
     FILE* pointer;
-    const int lines;
+    int lines;
 } ReadOnly_File;
 
 /*!
@@ -40,7 +40,7 @@ typedef struct ReadWrite_File {
 int get_lines_in_file(FILE* target);
 
 /*!
- * @brief Opens a read only file
+ * @brief Opens a read-only file
  *
  * @param file_path const char* file to be opened
  *
