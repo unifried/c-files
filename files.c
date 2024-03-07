@@ -1,101 +1,94 @@
 /*!
- * Author: James Carppe
- * Date: 29/02/2024
- * Version: 1.0.2
+* @Author James Carppe
+ * @Created 29/02/2024
  *
- * @brief Defines & implements types to simplify file input & output.
+ * @Version 2.0.0
+ * @LastUpdate 7/03/2024
  *
- * Primary comments are provided in the header file.
+ * @brief Provides file opening functions for the C programming language.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #include "files.h"
 
-// Gets the number of lines in a given file
-int get_lines_in_file(FILE *target) {
-    // Count the lines
+// Counts the lines in a file
+int get_file_line_count(FILE *self) {
+    // Initialise a variable to hold the lines
     int lines = 0;
 
-    int current_character;
-    do {
+    // Loop over the file
+    int current_character = ' ';
+    while (current_character != EOF) {
         // Read the next character in the file
-        current_character = fgetc(target);
+        current_character = fgetc(self);
 
         // If the character is a new line charcter, add 1 to lines
         if (current_character == '\n') lines++;
-    } while (current_character != EOF);
+    }
 
     // Return lines
     return lines;
 }
 
-// Opens and returns a read-only file inside a ReadOnly_File struct
-struct ReadOnly_File open_readonly_file(const char *file_path) {
-    // Open the file
-    FILE *file = fopen(file_path, "r");
+// Opens a simple file
+struct File open_file(const char *file_path, const char *file_mode) {
+    // Open the file and set it's structs values
+    File file = {
+        .pointer = fopen(file_path, file_mode),
+        .mode = file_mode,
+        .closed = false
+    };
 
-    // Create result template
-    ReadOnly_File result = {};
-
-    // Check open success
-    if (file == NULL) {
-        // File didnt open
-
-        // Return a blank struct
-        result.pointer = NULL;
-        result.lines = 0;
-
-        return result;
+    // Check if the file pointer is NULL
+    if (file.pointer == NULL) {
+        file.closed = true;
     }
 
-    // File opened successfully
-
-    // Get the lines in the file
-    const int lines = get_lines_in_file(file);
-
-    // Reset pointer
-    fclose(file);
-    file = fopen(file_path, "r");
-
-    // Return a completed struct
-    result.pointer = file;
-    result.lines = lines;
-
-    return result;
+    // Return the file
+    return file;
 }
 
-// Opens and returns a read+write file inside a ReadWrite_File struct
-struct ReadWrite_File open_readwrite_file(const char *file_path) {
+// Opens a complex file
+struct Complex_File open_complex_file(const char *file_path, const char *file_mode) {
     // Open the file
-    FILE *file = fopen(file_path, "r+");
+    Complex_File complex_file = {
+        .file = open_file(file_path, file_mode)
+    };
 
-    // Create result template
-    ReadWrite_File result = {};
+    // Count the lines in the file
+    FILE *copy_reference = (FILE *) complex_file.file.pointer;
+    complex_file.lines = get_file_line_count(copy_reference);
 
-    // Check open success
-    if (file == NULL) {
-        // File didnt open
+    // Return the complex file
+    return complex_file;
+}
 
-        // Return a blank struct
-        result.pointer = NULL;
-        result.lines = 0;
+// Closes a simple file
+void close_file(File *self) {
+    // Close the file
+    fclose((FILE *) self->pointer);
 
-        return result;
-    }
+    // Set the closed attribute to true
+    self->closed = true;
 
-    // File opened successfully
+    // Set the pointer to be NULL
+    self->pointer = NULL;
+}
 
-    // Get the lines in the file
-    const int lines = get_lines_in_file(file);
+// Closes a complex file
+void close_complex_file(Complex_File *self) {
+    // Close the file
+    fclose((FILE *) self->file.pointer);
 
-    // Reset pointer
-    fclose(file);
-    file = fopen(file_path, "r");
+    // Set the closed attribute to true
+    self->file.closed = true;
 
-    // Return a completed struct
-    result.pointer = file;
-    result.lines = lines;
+    // Set lines to 0
+    self->lines = 0;
 
-    return result;
+    // Set the pointer to be NULL
+    self->file.pointer = NULL;
 }

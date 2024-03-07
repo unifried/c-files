@@ -1,62 +1,72 @@
 /*!
- * Author: James Carppe
- * Date: 29/02/2024
- * Version: 1.0.1
+ * @Author James Carppe
+ * @Created 29/02/2024
  *
- * @brief Defines & implements types to simplify file input & output.
+ * @Version 2.0.0
+ * @LastUpdate 7/03/2024
+ *
+ * @brief Provides file opening functions for the C programming language.
  */
 
-// Header Guard
 #ifndef FILES_H
 #define FILES_H
 
-/*!
- * @brief ReadOnly_File is a type that cointains a pointer to a file that only has read permission, & the number of lines within the file.
- *
- * @field pointer   FILE*       pointer to a open file
- * @field lines     const int   number of lines in the file
- */
-typedef struct ReadOnly_File {
-    FILE* pointer;
-    int lines;
-} ReadOnly_File;
-
-/*!
- * @brief ReadWriter_File is a type that cointains a pointer to a file that has read & write permissions, & the number of lines within the file.
- *
- * @field pointer   FILE*   pointer to a open file
- * @field lines     int     number of lines in the file
- */
-typedef struct ReadWrite_File {
-    FILE* pointer;
-    int lines;
-} ReadWrite_File;
-
-/*!
- * @brief Gets the number of lines in a file
- *
- * @param target FILE* valid file pointer
- */
-int get_lines_in_file(FILE* target);
-
-/*!
- * @brief Opens a read-only file
- *
- * @param file_path const char* file to be opened
- *
- * @return ReadOnly_File representing the opened file
- *  - a NULL pointer will be assigned to ReadOnly_File.pointer is the open failed & lines will be set to 0
- */
-struct ReadOnly_File open_readonly_file(const char* file_path);
-
-/*!
- * @brief Opens a read & write file
- *
- * @param file_path const char* file to be opened
- *
- * @return ReadWrite_File representing the opened file
- *  - a NULL pointer will be assigned to ReadWrite_File.pointer is the open failed & lines will be set to 0
- */
-struct ReadWrite_File open_readwrite_file(const char* file_path);
-
 #endif //FILES_H
+
+#define FILE_MODE_CHAR_LENGTH 3
+
+/*!
+ * @brief Defines the fundamental file type that will have functionality expanded upon.
+ *
+ * @field pointer   const FILE*   Base pointer for an opened file
+ * @field mode      const char*   Mode that the file was opened in (r, r+, w, w+, etc)
+ * @field closed    bool          A way to indicate that the file pointer is no longer valid
+ */
+typedef struct File {
+    const FILE *pointer;
+    const char *mode;
+    bool closed;
+} File;
+
+/*!
+ * @brief Expands upon the base File structure to add additional features.
+ *
+ * @field file      File    File struct, see File documentaion for more information.
+ * @field lines     int     Represents the line count of the file.
+ */
+typedef struct Complex_File {
+    File file;
+    int lines;
+} Complex_File;
+
+/*!
+ * @brief Opens a simple file.
+ *
+ * @param file_path string representing the path to the target file.
+ * @param file_mode string representing which mode to open the file.
+ * @return a File struct which contains a pointer to the opened file.
+ */
+struct File open_file(const char *file_path, const char *file_mode);
+
+/*!
+ * @brief Opens a complex file.
+ *
+ * @param file_path string representing the path to the target file.
+ * @param file_mode string representing which mode to open the file.
+ * @return a Complex_File struct which contains a pointer to the opened file.
+ */
+struct Complex_File open_complex_file(const char *file_path, const char *file_mode);
+
+/*!
+ * @brief Closes a simple file.
+ *
+ * @param self reference to a File struct.
+ */
+void close_file(File *self);
+
+/*!
+ * @brief Closes a complex file.
+ *
+ * @param self reference to a Complex_File struct.
+ */
+void close_complex_file(Complex_File *self);
