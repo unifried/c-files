@@ -2,7 +2,7 @@
 * @Author James Carppe
  * @Created 29/02/2024
  *
- * @Version 2.0.0
+ * @Version 2.0.1
  * @LastUpdate 7/03/2024
  *
  * @brief Provides file opening functions for the C programming language.
@@ -28,6 +28,9 @@ int get_file_line_count(FILE *self) {
         // If the character is a new line charcter, add 1 to lines
         if (current_character == '\n') lines++;
     }
+
+    // Reset the pointer
+    rewind(self);
 
     // Return lines
     return lines;
